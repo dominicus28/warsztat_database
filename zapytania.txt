@@ -1,0 +1,163 @@
+1.    Mechanik sprawdza historię naprawy samochodu klienta:
+SELECT
+    *
+FROM
+    naprawy
+WHERE
+    `numer rejestracyjny` = 'DLA-26699'
+ORDER BY
+    `data naprawy`
+DESC
+    ;
+
+
+2.    Klient sprawdza czy interesująca go część (np. chlodnica) jest dostępna od ręki:
+SELECT
+    *
+FROM
+    magazyn
+WHERE
+    `id czesci` =(
+    SELECT
+        id
+    FROM
+        czesci
+    WHERE
+        `nazwa czesci` = 'chłodnica' AND `id samochodu` =(
+        SELECT
+            id
+        FROM
+            samochody
+        WHERE
+            marka = 'Volvo' AND model = 'S60' AND rocznik = 2005 AND silnik = '1.9 16V'
+    )
+);
+
+
+3.    Mechanik sprawdza czy część, którą potrzebuje wymienić jest w magazynie:
+SELECT
+    *
+FROM
+    magazyn
+WHERE
+    `id czesci` =(
+    SELECT
+        id
+    FROM
+        czesci
+    WHERE
+        `nazwa czesci` = 'napinacz paska' AND `id samochodu` = 194
+);
+
+
+4.    Mechanik wprowadza właśnie ukończoną naprawę do systemu:
+INSERT INTO naprawy(
+    `id mechanika`,
+    uwagi,
+    `data naprawy`,
+    `numer rejestracyjny`,
+    `id czesci`,
+    `koszt naprawy`
+)
+VALUES(
+    1,
+    'Naprawa skrzyni biegów',
+    '2022-12-01',
+    'AAS-47233',
+    5,
+    2000
+);
+
+
+5.    Mechanik w celach biznesowych sprawdza, która marka samochodu jest najbardziej awaryjna:
+SELECT
+    marka,
+    COUNT(naprawy.`numer rejestracyjny`) AS liczba_napraw
+FROM
+    naprawy
+JOIN `samochod klienta` ON naprawy.`numer rejestracyjny` = `samochod klienta`.`numer rejestracyjny`
+JOIN samochody ON `samochod klienta`.`id samochodu` = samochody.id
+GROUP BY
+    marka
+ORDER BY
+    liczba_napraw
+DESC
+    ;
+
+
+6.    Klient sprawdza historie napraw swojego samochodu:
+SELECT
+    *
+FROM
+    naprawy
+WHERE
+    `numer rejestracyjny` =(
+    SELECT
+        `numer rejestracyjny`
+    FROM
+        `samochod klienta`
+    WHERE
+        `id klienta` = 77 AND `id samochodu` = 479
+);
+
+
+7.    Klient sprawdza jakie dokładnie części zostały wymienione podczas ostatniej wizyty:
+SELECT
+    `nazwa czesci`
+FROM
+    naprawy
+JOIN czesci ON naprawy.`id czesci` = czesci.id
+WHERE
+    `numer rejestracyjny` = 'TLD-89051' AND `data naprawy` =(
+    SELECT
+        MAX(`data naprawy`)
+    FROM
+        naprawy
+    WHERE
+        `numer rejestracyjny` = 'TLD-89051'
+);
+
+
+8.	Mechanik sprawdza miesięczny przychód (koszt napraw + części).
+SELECT
+    SUM(`koszt naprawy` + czesci.cena) AS przychod_miesieczny
+FROM
+    naprawy
+JOIN czesci ON naprawy.`id czesci` = czesci.id
+WHERE
+    `data naprawy` BETWEEN '2022-11-01' AND '2022-11-30'
+;
+
+
+9.	Klient sprawdza cenę interesującej go części.
+SELECT
+    cena
+FROM
+    czesci
+WHERE
+    `nazwa czesci` = 'filtr DPF' AND `id samochodu` =(
+    SELECT
+        id
+    FROM
+        samochody
+    WHERE
+        marka = 'Chevrolet' AND model = 'Suburban 2500' AND rocznik = 1993 AND silnik = '1.8 DTI'
+);
+
+
+10.	Mechanicy generują raport ile napraw wykonał każdy z nich w ostatnim miesiącu (np. w celach przyznania premii).
+SELECT
+    imie,
+    nazwisko,
+    COUNT(`id mechanika`) AS liczba_napraw
+FROM
+    naprawy
+JOIN mechanicy ON naprawy.`id mechanika` = mechanicy.id
+WHERE
+    `data naprawy` BETWEEN '2022-11-01' AND '2022-11-30'
+GROUP BY
+    `id mechanika`
+ORDER BY
+    liczba_napraw
+DESC
+    ;
