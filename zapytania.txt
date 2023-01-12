@@ -11,7 +11,7 @@ DESC
     ;
 
 
-2.    Klient sprawdza czy interesująca go część (np. chlodnica) jest dostępna od ręki:
+2.    Klient sprawdza czy interesująca go część (np. wahacz przedni) jest dostępna od ręki:
 SELECT
     *
 FROM
@@ -23,13 +23,13 @@ WHERE
     FROM
         czesci
     WHERE
-        `nazwa czesci` = 'chłodnica' AND `id samochodu` =(
+        `nazwa czesci` = 'wahacz przedni' AND `id samochodu` =(
         SELECT
             id
         FROM
             samochody
         WHERE
-            marka = 'Volvo' AND model = 'S60' AND rocznik = 2005 AND silnik = '1.9 16V'
+            marka = 'Maserati' AND model = 'Coupe' AND rocznik = 2006 AND silnik = '3.5 V8'
     )
 );
 
