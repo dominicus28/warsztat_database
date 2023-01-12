@@ -1,21 +1,20 @@
-CREATE DATABASE warsztat;
+CREATE DATABASE warsztat CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 USE warsztat;
+ 
+CREATE TABLE `warsztat`.`naprawy` (`id` INT NOT NULL AUTO_INCREMENT, `id mechanika` INT NOT NULL , `uwagi` VARCHAR(64) NULL DEFAULT NULL , `data naprawy` DATE NOT NULL , `numer rejestracyjny` VARCHAR(10) NOT NULL , `id czesci` INT NOT NULL , `koszt naprawy` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 
+CREATE TABLE `warsztat`.`mechanicy` (`id` INT NOT NULL AUTO_INCREMENT , `imie` VARCHAR(32) NOT NULL , `nazwisko` VARCHAR(32) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 
-CREATE TABLE `warsztat`.`naprawy` (`id` INT NOT NULL AUTO_INCREMENT, `id mechanika` INT NOT NULL , `uwagi` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL , `data naprawy` DATE NOT NULL , `numer rejestracyjny` VARCHAR(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL , `id czesci` INT NOT NULL , `koszt naprawy` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+CREATE TABLE `warsztat`.`klienci` (`id` INT NOT NULL AUTO_INCREMENT , `imie` VARCHAR(32) NOT NULL , `nazwisko` VARCHAR(32) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 
-CREATE TABLE `warsztat`.`mechanicy` (`id` INT NOT NULL AUTO_INCREMENT , `imie` VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL , `nazwisko` VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
-
-CREATE TABLE `warsztat`.`klienci` (`id` INT NOT NULL AUTO_INCREMENT , `imie` VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL , `nazwisko` VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
-
-CREATE TABLE `warsztat`.`samochod klienta` (`numer rejestracyjny` VARCHAR(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL , `id klienta` INT NOT NULL , `id samochodu` INT NOT NULL , PRIMARY KEY (`numer rejestracyjny`)) ENGINE = InnoDB;
+CREATE TABLE `warsztat`.`samochod klienta` (`numer rejestracyjny` VARCHAR(10) NOT NULL , `id klienta` INT NOT NULL , `id samochodu` INT NOT NULL , PRIMARY KEY (`numer rejestracyjny`)) ENGINE = InnoDB;
 
 CREATE TABLE `warsztat`.`magazyn` (`id` INT NOT NULL AUTO_INCREMENT , `id czesci` INT NOT NULL , `ilosc sztuk` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 
-CREATE TABLE `warsztat`.`czesci` (`id` INT NOT NULL AUTO_INCREMENT , `id samochodu` INT NOT NULL , `nazwa czesci` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL , `cena` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+CREATE TABLE `warsztat`.`czesci` (`id` INT NOT NULL AUTO_INCREMENT , `id samochodu` INT NOT NULL , `nazwa czesci` VARCHAR(64) NOT NULL , `cena` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 
-CREATE TABLE `warsztat`.`samochody` (`id` INT NOT NULL AUTO_INCREMENT , `marka` VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL , `model` VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL , `rocznik` INT NOT NULL , `silnik` VARCHAR(12) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+CREATE TABLE `warsztat`.`samochody` (`id` INT NOT NULL AUTO_INCREMENT , `marka` VARCHAR(32) NOT NULL , `model` VARCHAR(32) NOT NULL , `rocznik` INT NOT NULL , `silnik` VARCHAR(12) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 
 ALTER TABLE `naprawy` ADD FOREIGN KEY (`id mechanika`) REFERENCES `mechanicy`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
